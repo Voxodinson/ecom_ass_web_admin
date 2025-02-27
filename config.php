@@ -1,13 +1,24 @@
 <?php
-$host = "localhost";
-$username = "root";
-$password = "";
-$database = "ecom_web_assignment";
+    $host = "localhost";
+    $username = "root";
+    $password = "";
+    $database = "ecom_web_assignment";
 
-$con = new mysqli($host, $username, $password, $database);
+    try {
+        $con = new PDO(
+            "mysql:host=$host;dbname=$database",
+            $username, 
+            $password
+        );
+        
+        $con->setAttribute(
+            PDO::ATTR_ERRMODE, 
+            PDO::ERRMODE_EXCEPTION
+        );
 
-if (!$con) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
+    } catch (PDOException $e) {
+        die(
+            "Connection failed: " . 
+            $e->getMessage());
+    }
 ?>
