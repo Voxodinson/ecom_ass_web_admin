@@ -166,12 +166,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="form-group">
                     <label for="price" class="text-lg font-medium text-gray-700">Price</label>
-                    <input type="number" name="price" id="price" value="<?php echo $product['price']; ?>" step="0.01" class="w-full p-4 mt-2 rounded-lg border border-gray-300" required>
+                    <input type="number" name="price" id="price" value="<?php echo $product['price']; ?>" step="0.01" class="w-full p-4 mt-2  border border-gray-300" required>
                 </div>
 
                 <div class="form-group">
                     <label for="stock_qty" class="text-lg font-medium text-gray-700">Stock Quantity</label>
-                    <input type="number" name="stock_qty" id="stock_qty" value="<?php echo $product['stock_qty']; ?>" class="w-full p-4 mt-2 rounded-lg border border-gray-300" required>
+                    <input type="number" name="stock_qty" id="stock_qty" value="<?php echo $product['stock_qty']; ?>" class="w-full p-4 mt-2 border border-gray-300" required>
                 </div>
             </div>
 
