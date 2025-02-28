@@ -1,234 +1,226 @@
+
+
+
+
+
 <?php
-include('auth.php');
-include_once('config.php');
+include('config.php'); // Include database connection
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get form data
+    // Collect form data
     $name = $_POST['name'];
-    $product_type = $_POST['product_type'];
+    $product_type = $_POST['product_type'] ?? null;
     $price = $_POST['price'];
-    $size = json_encode($_POST['size']); // JSON encode sizes
-    $rating = $_POST['rating'];
-    $stock_qty = $_POST['stock_qty'];
-    $status = $_POST['status'];
-    $details = $_POST['details'];
-    $brand = $_POST['brand'];
-    $color = $_POST['color'];
-    $material = $_POST['material'];
-    $style = $_POST['style'];
-    $product_for = $_POST['product_for'];
+    $sizes = isset($_POST['size']) ? json_encode($_POST['size']) : json_encode([]); // Encode sizes as JSON
+    $rating = $_POST['rating'] ?? null;
+    $stock_qty = $_POST['stock_qty'] ?? 0;
+    $status = $_POST['status'] ?? null;
+    $details = $_POST['details'] ?? null;
+    $brand = $_POST['brand'] ?? null;
+    $color = $_POST['color'] ?? null;
+    $material = $_POST['material'] ?? null;
+    $style = $_POST['style'] ?? null;
+    $product_for = $_POST['product_for'] ?? null;
 
-    // Handle file upload
+    $upload_directory = 'uploads/images/';
     $uploaded_images = [];
-    $upload_directory = 'uploads/images/';   
-    foreach ($_FILES['images']['name'] as $index => $image_name) {
-        if ($_FILES['images']['error'][$index] == 0) {
-            $tmp_name = $_FILES['images']['tmp_name'][$index];
-            $new_image_name = $upload_directory . basename(preg_replace('/[^a-zA-Z0-9_-]/', '_', $image_name));
-            
-            $file_size = $_FILES['images']['size'][$index];
-            $max_file_size = 200 * 1024 * 1024; // 200MB
-            if ($file_size > $max_file_size) {
-                $error_message = "File size exceeds the allowed limit of 10MB for $image_name.";
-                break;
-            }
-            
-            if (move_uploaded_file($tmp_name, $new_image_name)) {
-                $uploaded_images[] = $new_image_name;
-            } else {
-                error_log("Failed to move file from $tmp_name to $new_image_name");
-                $error_message = "Error moving file: $image_name.";
-                break;
-            }
-        } else {
-            error_log("File upload error for $image_name: " . $_FILES['images']['error'][$index]);
-            $error_message = "Error uploading file: $image_name.";
-            break;
-        }
+
+    if (!is_dir($upload_directory)) {
+        mkdir($upload_directory, 0777, true);
     }
 
+    if (!empty($_FILES['images']['name'][0])) {
+        foreach ($_FILES['images']['name'] as $index => $image_name) {
+            if ($_FILES['images']['error'][$index] == 0) {
+                $tmp_name = $_FILES['images']['tmp_name'][$index];
+                $extension = pathinfo($image_name, PATHINFO_EXTENSION);
+                $new_image_name = uniqid("img_", true) . "." . $extension;
+                $new_image_path = $upload_directory . $new_image_name;
+
+                if (move_uploaded_file($tmp_name, $new_image_path)) {
+                    $uploaded_images[] = $new_image_name;
+                } else {
+                    echo "<div class='bg-red-500 text-white p-3 mb-4 rounded-lg'>Failed to upload: $image_name</div>";
+                }
+            } else {
+                echo "<div class='bg-red-500 text-white p-3 mb-4 rounded-lg'>File upload error for $image_name. Error Code: " . $_FILES['images']['error'][$index] . "</div>";
+            }
+        }
+    }
+    
     $images = json_encode($uploaded_images);
 
-    if (!isset($error_message)) {
-        try {
-            $sql = "INSERT INTO products_tb 
-                    (name, product_type, price, size, images, details, rating, stock_qty, status, brand, color, material, style, product_for) 
-                    VALUES 
-                    (:name, :product_type, :price, :size, :images, :details, :rating, :stock_qty, :status, :brand, :color, :material, :style, :product_for)";
-            
-            $stmt = $con->prepare($sql);
-            $stmt->bindParam(':name', $name);
-            $stmt->bindParam(':product_type', $product_type);
-            $stmt->bindParam(':price', $price);
-            $stmt->bindParam(':size', $size);
-            $stmt->bindParam(':images', $images);  // Bind the images JSON string
-            $stmt->bindParam(':details', $details);
-            $stmt->bindParam(':rating', $rating);
-            $stmt->bindParam(':stock_qty', $stock_qty);
-            $stmt->bindParam(':status', $status);
-            $stmt->bindParam(':brand', $brand);
-            $stmt->bindParam(':color', $color);
-            $stmt->bindParam(':material', $material);
-            $stmt->bindParam(':style', $style);
-            $stmt->bindParam(':product_for', $product_for);
+    try {
+        $sql = "INSERT INTO products_tb 
+                (name, product_type, price, size, images, details, rating, stock_qty, status, brand, color, material, style, product_for) 
+                VALUES 
+                (:name, :product_type, :price, :size, :images, :details, :rating, :stock_qty, :status, :brand, :color, :material, :style, :product_for)";
 
-            if ($stmt->execute()) {
-                $success_message = "Product created successfully!";
-            } else {
-                $error_message = "There was an error creating the product.";
-            }
-        } catch (PDOException $e) {
-            $error_message = "Error: " . $e->getMessage();
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':product_type', $product_type);
+        $stmt->bindParam(':price', $price);
+        $stmt->bindParam(':size', $sizes);
+        $stmt->bindParam(':images', $images);
+        $stmt->bindParam(':details', $details);
+        $stmt->bindParam(':rating', $rating);
+        $stmt->bindParam(':stock_qty', $stock_qty);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':brand', $brand);
+        $stmt->bindParam(':color', $color);
+        $stmt->bindParam(':material', $material);
+        $stmt->bindParam(':style', $style);
+        $stmt->bindParam(':product_for', $product_for);
+
+        if ($stmt->execute()) {
+            echo "<div class='bg-green-500 text-white p-3 mb-4 rounded-lg'>Product created successfully!</div>";
+        } else {
+            echo "<div class='bg-red-500 text-white p-3 mb-4 rounded-lg'>Error creating product.</div>";
         }
+    } catch (PDOException $e) {
+        echo "<div class='bg-red-500 text-white p-3 mb-4 rounded-lg'>Database Error: " . $e->getMessage() . "</div>";
     }
 }
 ?>
 
-<div class="flex-1 h-full overflow-y-auto">
-    <div class="">
-        <div class="bg-white p-2 rounded-lg shadow-md">
-            <?php if (isset($success_message)): ?>
-                <div class="bg-green-500 text-white p-3 mb-4 rounded-lg">
-                    <?= $success_message ?>
-                </div>
-            <?php elseif (isset($error_message)): ?>
-                <div class="bg-red-500 text-white p-3 mb-4 rounded-lg">
-                    <?= $error_message ?>
-                </div>
-            <?php endif; ?>
 
-            <form method="POST" enctype="multipart/form-data">
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="flex flex-col">
-                        <label for="name" class="mb-2 font-semibold">Product Name</label>
-                        <input type="text" name="name" id="name" class="border p-2 rounded" required>
-                    </div>
-
-                    <div class="flex flex-col">
-                        <label for="product_type" class="mb-2 font-semibold">Product Type</label>
-                        <input type="text" name="product_type" id="product_type" class="border p-2 rounded">
-                    </div>
-
-                    <div class="flex flex-col">
-                        <label for="price" class="mb-2 font-semibold">Price</label>
-                        <input type="number" name="price" id="price" class="border p-2 rounded" required step="0.01">
-                    </div>
-
-                    <div class="flex flex-col">
-                        <label for="size" class="mb-2 font-semibold">Size</label>
-                        <div id="size-container" class="w-full grid grid-cols-3 flex-col gap-3">
-                            <input type="text" name="size[]" class="border p-2 rounded mb-2 w-full" placeholder="Size 1">
-                        </div>
-                        <button type="button" id="add-size" class="text-blue-500 mt-2">Add more sizes</button>
-                    </div>
-
-                    <div class="flex flex-col">
-                        <label for="images" class="mb-2 font-semibold">Images (Upload Multiple)</label>
-                        <input type="file" name="images[]" class="border p-2 rounded mb-2" accept="image/*" multiple id="image-input" required>
-                        <div id="image-previews" class="mt-4"></div>
-                    </div>
-
-                    <div class="flex flex-col">
-                        <label for="rating" class="mb-2 font-semibold">Rating (0-5)</label>
-                        <input type="number" name="rating" id="rating" class="border p-2 rounded" required step="0.1" min="0" max="5">
-                    </div>
-
-                    <div class="flex flex-col">
-                        <label for="stock_qty" class="mb-2 font-semibold">Stock Quantity</label>
-                        <input type="number" name="stock_qty" id="stock_qty" class="border p-2 rounded" required>
-                    </div>
-
-                    <div class="flex flex-col">
-                        <label for="status" class="mb-2 font-semibold">Status</label>
-                        <select name="status" id="status" class="border p-2 rounded" required>
-                            <option value="new arrive">New Arrive</option>
-                            <option value="best sale">Best Sale</option>
-                        </select>
-                    </div>
-
-                    <div class="flex flex-col">
-                        <label for="details" class="mb-2 font-semibold">Product Details</label>
-                        <textarea name="details" id="details" class="border p-2 rounded" rows="4"></textarea>
-                    </div>
-
-                    <div class="flex flex-col">
-                        <label for="brand" class="mb-2 font-semibold">Brand</label>
-                        <input type="text" name="brand" id="brand" class="border p-2 rounded">
-                    </div>
-
-                    <div class="flex flex-col">
-                        <label for="color" class="mb-2 font-semibold">Color</label>
-                        <input type="text" name="color" id="color" class="border p-2 rounded">
-                    </div>
-
-                    <div class="flex flex-col">
-                        <label for="material" class="mb-2 font-semibold">Material</label>
-                        <input type="text" name="material" id="material" class="border p-2 rounded">
-                    </div>
-
-                    <div class="flex flex-col">
-                        <label for="style" class="mb-2 font-semibold">Style</label>
-                        <input type="text" name="style" id="style" class="border p-2 rounded">
-                    </div>
-
-                    <div class="flex flex-col">
-                        <label for="product_for" class="mb-2 font-semibold">For</label>
-                        <select name="product_for" id="product_for" class="border p-2 rounded">
-                            <option value="men">Men</option>
-                            <option value="women">Women</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="mt-6">
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Create Product</button>
-                </div>
-            </form>
-        </div>
+<form method="POST" enctype="multipart/form-data" class="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+    <!-- Product Name -->
+    <div class="mb-4">
+        <label for="name" class="block text-lg font-medium text-gray-700">Product Name</label>
+        <input type="text" name="name" id="name" placeholder="Product Name" required class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
     </div>
-</div>
+
+    <!-- Product Type -->
+    <div class="mb-4">
+        <label for="product_type" class="block text-lg font-medium text-gray-700">Product Type</label>
+        <input type="text" name="product_type" id="product_type" placeholder="Product Type" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <!-- Price -->
+    <div class="mb-4">
+        <label for="price" class="block text-lg font-medium text-gray-700">Price</label>
+        <input type="number" name="price" id="price" placeholder="Price" step="0.01" required class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <!-- Sizes -->
+    <div class="mb-4">
+        <label for="size" class="block text-lg font-medium text-gray-700">Sizes</label>
+        <div id="size-container">
+            <input type="text" name="size[]" placeholder="Size 1" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mb-2">
+        </div>
+        <button type="button" id="add-size" class="inline-block mt-2 text-sm text-indigo-600 hover:text-indigo-900">Add more sizes</button>
+    </div>
+
+    <!-- Image Upload -->
+    <div class="mb-4">
+        <label for="image-input" class="block text-lg font-medium text-gray-700">Product Images</label>
+        <input type="file" name="images[]" multiple id="image-input" class="mt-1 block w-full text-sm text-gray-500 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+        <div id="image-previews" class="mt-4 flex flex-wrap gap-4"></div>
+    </div>
+
+    <!-- Rating -->
+    <div class="mb-4">
+        <label for="rating" class="block text-lg font-medium text-gray-700">Rating (0-5)</label>
+        <input type="number" name="rating" id="rating" placeholder="Rating" step="0.1" min="0" max="5" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <!-- Stock Quantity -->
+    <div class="mb-4">
+        <label for="stock_qty" class="block text-lg font-medium text-gray-700">Stock Quantity</label>
+        <input type="number" name="stock_qty" id="stock_qty" placeholder="Stock Quantity" required class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <!-- Status -->
+    <div class="mb-4">
+        <label for="status" class="block text-lg font-medium text-gray-700">Status</label>
+        <select name="status" id="status" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            <option value="new arrive">New Arrive</option>
+            <option value="best sale">Best Sale</option>
+        </select>
+    </div>
+
+    <!-- Product Details -->
+    <div class="mb-4">
+        <label for="details" class="block text-lg font-medium text-gray-700">Product Details</label>
+        <textarea name="details" id="details" placeholder="Product Details" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+    </div>
+
+    <!-- Brand -->
+    <div class="mb-4">
+        <label for="brand" class="block text-lg font-medium text-gray-700">Brand</label>
+        <input type="text" name="brand" id="brand" placeholder="Brand" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <!-- Color -->
+    <div class="mb-4">
+        <label for="color" class="block text-lg font-medium text-gray-700">Color</label>
+        <input type="text" name="color" id="color" placeholder="Color" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <!-- Material -->
+    <div class="mb-4">
+        <label for="material" class="block text-lg font-medium text-gray-700">Material</label>
+        <input type="text" name="material" id="material" placeholder="Material" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <!-- Style -->
+    <div class="mb-4">
+        <label for="style" class="block text-lg font-medium text-gray-700">Style</label>
+        <input type="text" name="style" id="style" placeholder="Style" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <!-- Product For -->
+    <div class="mb-4">
+        <label for="product_for" class="block text-lg font-medium text-gray-700">Product For</label>
+        <select name="product_for" id="product_for" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            <option value="men">Men</option>
+            <option value="women">Women</option>
+        </select>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="mt-6">
+        <button type="submit" class="w-full bg-indigo-600 text-white p-3 rounded-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            Create Product
+        </button>
+    </div>
+</form>
+
 
 <script>
-    document.getElementById('image-input').addEventListener('change', function(event) {
-        const previewContainer = document.getElementById('image-previews');
-        previewContainer.innerHTML = ''; // Clear any previous previews
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('add-size').addEventListener('click', function() {
+            let sizeContainer = document.getElementById('size-container');
+            let newSizeInput = document.createElement('input');
+            newSizeInput.type = 'text';
+            newSizeInput.name = 'size[]';
+            newSizeInput.classList.add('border', 'p-2', 'rounded', 'mb-2', 'w-full');
+            newSizeInput.placeholder = 'Additional Size';
+            sizeContainer.appendChild(newSizeInput);
+        });
 
-        for (let i = 0; i < event.target.files.length; i++) {
-            const file = event.target.files[i];
-            const reader = new FileReader();
+        document.getElementById('image-input').addEventListener('change', function(event) {
+            let previewContainer = document.getElementById('image-previews');
+            previewContainer.innerHTML = ''; // Clear previous previews
 
-            reader.onload = function(e) {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.classList.add('w-32', 'h-32', 'object-cover', 'mr-2');
-                
-                const deleteButton = document.createElement('button');
-                deleteButton.innerText = 'Delete';
-                deleteButton.classList.add('text-red-500', 'mt-2');
-                deleteButton.onclick = function() {
-                    img.remove();
-                    deleteButton.remove();
+            for (let i = 0; i < event.target.files.length; i++) {
+                let file = event.target.files[i];
+                let reader = new FileReader();
+
+                reader.onload = function(e) {
+                    let img = document.createElement('img');
+                    img.src = e.target.result; // Display image in preview
+                    img.classList.add('w-32', 'h-32', 'object-cover', 'mr-2');
+
+                    let preview = document.createElement('div');
+                    preview.classList.add('inline-block', 'mr-4');
+                    preview.appendChild(img);
+                    previewContainer.appendChild(preview);
                 };
 
-                const preview = document.createElement('div');
-                preview.classList.add('inline-block', 'mr-4');
-                preview.appendChild(img);
-                preview.appendChild(deleteButton);
-
-                previewContainer.appendChild(preview);
-            };
-
-            reader.readAsDataURL(file);
-        }
-    });
-
-    document.getElementById('add-size').addEventListener('click', function() {
-        const sizeContainer = document.getElementById('size-container');
-        const newSizeInput = document.createElement('input');
-        newSizeInput.type = 'text';
-        newSizeInput.name = 'size[]';
-        newSizeInput.classList.add('border', 'p-2', 'rounded', 'mb-2');
-        newSizeInput.placeholder = 'Additional Size';
-        sizeContainer.appendChild(newSizeInput);
+                reader.readAsDataURL(file);
+            }
+        });
     });
 </script>
