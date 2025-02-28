@@ -78,52 +78,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <div class="w-full flex items-center justify-center">
-    <form method="POST" enctype="multipart/form-data" class="w-full p-3 shadow-lg rounded-2xl border border-gray-200">
+    <form method="POST" enctype="multipart/form-data" class="w-full p-2 shadow-lg rounded-2xl border border-gray-200">
         <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Create Product</h2>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <label for="name" class="block text-lg font-medium text-gray-700">Product Name</label>
-                <input type="text" name="name" id="name" placeholder="Enter product name" required class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="text" name="name" id="name" placeholder="Enter product name" required class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
             </div>
 
             <div>
                 <label for="product_type" class="block text-lg font-medium text-gray-700">Product Type</label>
-                <input type="text" name="product_type" id="product_type" placeholder="Enter product type" class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="text" name="product_type" id="product_type" placeholder="Enter product type" class=" mt-1 block w-full p-2 border border-gray-300  shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
             </div>
         
             <div>
                 <label for="price" class="block text-lg font-medium text-gray-700">Price</label>
-                <input type="number" name="price" id="price" placeholder="Enter price" step="0.01" required class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="number" name="price" id="price" placeholder="Enter price" step="0.01" required class=" mt-1 block w-full p-2 border border-gray-300  shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
             </div>
 
             <div>
                 <label for="stock_qty" class="block text-lg  font-medium text-gray-700">Stock Quantity</label>
-                <input type="number" name="stock_qty" id="stock_qty" placeholder="Enter stock quantity" required class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="number" name="stock_qty" id="stock_qty" placeholder="Enter stock quantity" required class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
             </div>
         </div>
 
         <div class="mt-4">
             <label for="size" class="block text-lg font-medium text-gray-700">Sizes</label>
             <div id="size-container">
-                <input type="text" name="size[]" placeholder="Size 1" class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mb-2">
+                <input type="text" name="size[]" placeholder="Size 1" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mb-2">
             </div>
             <button type="button" id="add-size" class="text-sm text-indigo-600 hover:text-indigo-800">+ Add more sizes</button>
         </div>
 
         <div class="mt-4">
             <label class="block text-lg font-medium text-gray-700">Product Images</label>
-            <input type="file" name="images[]" multiple id="image-input" class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            <input type="file" name="images[]" multiple id="image-input" class=" mt-1 block w-full p-2 border border-gray-300  shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
         </div>
 
         <div class="mt-4">
             <label for="rating" class="block text-lg font-medium text-gray-700">Rating (0-5)</label>
-            <input type="number" name="rating" id="rating" placeholder="Enter rating" step="0.1" min="0" max="5" class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            <input type="number" name="rating" id="rating" placeholder="Enter rating" step="0.1" min="0" max="5" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
         </div>
 
         <div class="mt-4">
             <label for="status" class="block text-lg font-medium text-gray-700">Status</label>
-            <select name="status" id="status" class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            <select name="status" id="status" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="new arrive">New Arrive</option>
                 <option value="best sale">Best Sale</option>
             </select>
@@ -131,43 +131,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="mt-4">
             <label for="details" class="block text-lg font-medium text-gray-700">Product Details</label>
-            <textarea name="details" id="details" placeholder="Enter product details" class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+            <textarea name="details" id="details" placeholder="Enter product details" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
             <div>
                 <label for="brand" class="block text-lg font-medium text-gray-700">Brand</label>
-                <input type="text" name="brand" id="brand" placeholder="Enter brand" class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="text" name="brand" id="brand" placeholder="Enter brand" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
             </div>
 
             <div>
                 <label for="color" class="block text-lg font-medium text-gray-700">Color</label>
-                <input type="text" name="color" id="color" placeholder="Enter color" class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="text" name="color" id="color" placeholder="Enter color" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
             <div>
                 <label for="material" class="block text-lg font-medium text-gray-700">Material</label>
-                <input type="text" name="material" id="material" placeholder="Enter material" class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="text" name="material" id="material" placeholder="Enter material" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
             </div>
 
             <div>
                 <label for="style" class="block text-lg font-medium text-gray-700">Style</label>
-                <input type="text" name="style" id="style" placeholder="Enter style" class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="text" name="style" id="style" placeholder="Enter style" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
             </div>
         </div>
 
         <div class="mt-4">
             <label for="product_for" class="block text-lg font-medium text-gray-700">Product For</label>
-            <select name="product_for" id="product_for" class=" mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            <select name="product_for" id="product_for" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="men">Men</option>
                 <option value="women">Women</option>
             </select>
         </div>
 
         <div class="mt-6">
-            <button type="submit" class="w-full bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-md">
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-md">
                 Create Product
             </button>
         </div>
