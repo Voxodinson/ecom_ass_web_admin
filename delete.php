@@ -1,21 +1,26 @@
 <?php
-include('config.php');
+include('auth.php');
+include_once('config.php');
+if (isset($_GET['id']) && !empty($_GET['id'])) {
+    $product_id = $_GET['id'];
 
-// Check if product_id is set
-if (isset($_GET['product_id'])) {
-    $product_id = $_GET['product_id'];
-
-    // Delete product from the database
     try {
-        $stmt = $con->prepare("DELETE FROM products_tb WHERE id = :product_id");
-        $stmt->bindParam(':product_id', $product_id);
+        $sql = "DELETE FROM products_tb WHERE id = :id";
+        $stmt = $con->prepare($sql);
+
+        $stmt->bindParam(':id', $product_id, PDO::PARAM_INT);
+
         if ($stmt->execute()) {
-            echo "<div class='bg-green-500 text-white p-3 mb-4 rounded-lg'>Product deleted successfully!</div>";
+            header('Location: products_list.php?status=success');
         } else {
-            echo "<div class='bg-red-500 text-white p-3 mb-4 rounded-lg'>Error deleting product.</div>";
+            header('Location: products_list.php?status=error');
         }
     } catch (PDOException $e) {
-        echo "<div class='bg-red-500 text-white p-3 mb-4 rounded-lg'>Database Error: " . $e->getMessage() . "</div>";
+        die("Delete Error: " . $e->getMessage());
     }
+} else {
+    header('Location: index.php');
 }
+
+$con = null;
 ?>

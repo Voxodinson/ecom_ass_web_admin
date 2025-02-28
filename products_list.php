@@ -1,16 +1,16 @@
 <?php
-    include('auth.php');
-    include_once('config.php');
+include('auth.php');
+include_once('config.php');
 
-    try {
-        // Use PDO to fetch products
-        $sql = "SELECT * FROM products_tb";
-        $stmt = $con->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        die("Query Error: " . $e->getMessage());
-    }
+try {
+    // Use PDO to fetch products
+    $sql = "SELECT * FROM products_tb";
+    $stmt = $con->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Query Error: " . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
@@ -21,12 +21,20 @@
     <title>Products List</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
     <script>
         function toggleCreateForm() {
             const table = document.getElementById('products-table');
             const createForm = document.getElementById('create-form');
             table.classList.toggle('hidden');
             createForm.classList.toggle('hidden');
+        }
+
+        function confirmDelete(id) {
+            const isConfirmed = confirm('Are you sure you want to delete this product?');
+            if (isConfirmed) {
+                window.location.href = 'delete.php?id=' + id;
+            }
         }
     </script>
 </head>
@@ -47,7 +55,8 @@
                 <?php include('user.php')?>
             </div>
         </div>
-        <div id="products-table" class="p-2">
+
+        <div id="products-table" class="p-2 w-full">
             <div class="bg-white p-2 rounded-lg shadow-md">
                 <table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
                     <thead class="bg-[#3674B5] text-white">
@@ -91,8 +100,8 @@
                                         <a href="edit.php?id=<?= $row['id'] ?>" class="text-blue-500 hover:underline">
                                             <i class="fa-solid text-[1.2rem] fa-edit"></i>
                                         </a>
-                                        <a href="delete.php?id=<?= $row['id'] ?>" class="text-red-500 hover:underline ml-3">
-                                            <i class="fa-solid text-[1.2rem]  fa-trash"></i>
+                                        <a href="javascript:void(0);" onclick="confirmDelete(<?= $row['id'] ?>)" class="text-red-500 hover:underline ml-3">
+                                            <i class="fa-solid text-[1.2rem] fa-trash"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -106,11 +115,10 @@
                 </table>
             </div>
         </div>
-        <div class="w-full p-2">
-            <div id="create-form" class="p-2 bg-white shadow-md rounded-lg overflow-auto hidden">
-                <h2 class="text-xl font-semibold mb-4">Create New Product</h2>
-                <?php include('create_product.php')?>
-            </div>
+
+        <div id="create-form" class="p-2 w-full bg-white shadow-md rounded-lg overflow-auto hidden">
+            <h2 class="text-xl font-semibold mb-4">Create New Product</h2>
+            <?php include('create_product.php')?>
         </div>
     </div>
 </div>
@@ -118,5 +126,12 @@
 <?php
     $con = null;
 ?>
+
+<?php if (isset($_GET['status'])): ?>
+    <div class="fixed top-0 left-0 w-full p-4 bg-green-500 text-white text-center">
+        <?php echo $_GET['status'] == 'success' ? 'Product deleted successfully!' : 'Failed to delete the product!'; ?>
+    </div>
+<?php endif; ?>
+
 </body>
 </html>
