@@ -70,7 +70,7 @@
                                         <?php
                                         $images = json_decode($row['images'], true);
                                         if (!empty($images) && is_array($images)) {
-                                            echo '<img src="' . htmlspecialchars($images[0]) . '" class="w-[80px] h-[80px] object-center rounded-lg">';
+                                            echo '<img src="uploads/images/' . htmlspecialchars($images[0]) . '" class="w-[80px] h-[80px] object-center rounded-lg">';
                                         } else {
                                             echo 'No Image';
                                         }
