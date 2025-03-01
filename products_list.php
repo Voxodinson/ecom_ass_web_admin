@@ -38,7 +38,7 @@ try {
         }
     </script>
 </head>
-<body class="bg-gray-100">
+<body>
 
 <div class="flex h-screen overflow-auto ">
     <div class="w-[300px] h-full bg-white shadow-md flex-shrink-0">
@@ -47,7 +47,7 @@ try {
 
     <div class="flex-1 h-full overflow-auto">
         <div class="h-[60px] w-full border-b border-gray-200 flex items-center justify-between px-4">
-            <h3>Dashboard</h3>
+            <h3>Product List</h3>
             <div class="flex gap-3 items-center ">
                 <button onclick="toggleCreateForm()" class="ml-4 text-[.8rem] bg-[#3674B5] text-white px-4 py-2 rounded-full">
                     Create Product
@@ -56,19 +56,20 @@ try {
             </div>
         </div>
 
-        <div id="products-table" class="p-2 w-full">
-            <div class="bg-white p-2 rounded-lg shadow-md">
-                <table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
+        <div id="products-table" class="p-3 w-full ">
+            <div class="bg-white p-3 rounded-lg shadow-md  border-[1px] border-gray-200">
+                <h3 class="mb-4 text-lg font-semibold">Users List</h3>
+                <table class="w-full bg-white  rounded-lg overflow-hidden">
                     <thead class="bg-[#3674B5] text-white">
-                        <tr class="text-[1rem] font-thin">
-                            <th class="py-3 px-6 text-left">Image</th>
-                            <th class="py-3 px-6 text-left">Name</th>
-                            <th class="py-3 px-6 text-left">Type</th>
-                            <th class="py-3 px-6 text-left">Price</th>
-                            <th class="py-3 px-6 text-left">Size</th>
-                            <th class="py-3 px-6 text-left">Rating</th>
-                            <th class="py-3 px-6 text-left">Stock</th>
-                            <th class="py-3 px-6 text-left">Actions</th>
+                        <tr class=" font-thin">
+                            <th class="py-2 px-4 text-left">Image</th>
+                            <th class="py-2 px-4 text-left">Name</th>
+                            <th class="py-2 px-4 text-left">Type</th>
+                            <th class="py-2 px-4 text-left">Price</th>
+                            <th class="py-2 px-4 text-left">Size</th>
+                            <th class="py-2 px-4 text-left">Rating</th>
+                            <th class="py-2 px-4 text-left">Stock</th>
+                            <th class="py-2 px-4 text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="text-gray-700">
@@ -116,7 +117,7 @@ try {
             </div>
         </div>
 
-        <div id="create-form" class="p-2 w-full bg-white shadow-md rounded-lg overflow-auto hidden">
+        <div id="create-form" class="p-3 w-full bg-white hidden">
             <h2 class="text-xl font-semibold mb-4">Create New Product</h2>
             <?php include('create_product.php')?>
         </div>

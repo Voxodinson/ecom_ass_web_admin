@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <div class="w-full flex items-center justify-center">
-    <form method="POST" enctype="multipart/form-data" class="w-full p-2 shadow-lg rounded-2xl border border-gray-200">
+    <form method="POST" enctype="multipart/form-data" class="w-full">
         <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Create Product</h2>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

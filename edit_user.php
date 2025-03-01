@@ -1,5 +1,4 @@
 <?php
-// Include authentication check and config for DB connection
 include('auth.php');
 include_once('config.php');
 
@@ -13,34 +12,28 @@ if (isset($_GET['id'])) {
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    // Check if the user exists
     if (!$user) {
         echo "User not found!";
         exit();
     }
 
-    // Handle the form submission for updating the user/admin
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = $_POST['username'];
         $email = $_POST['email'];
-        $password = $_POST['password'] ? password_hash($_POST['password'], PASSWORD_DEFAULT) : $user['password']; // Update password if provided
-        $role = $_POST['role'];
-        $last_purchase_id = $_POST['last_purchase_id'] ?? NULL; // Optional
+        $password = $_POST['password'] ? password_hash($_POST['password'], PASSWORD_DEFAULT) : $user['password'];
+        $role = $_POST['role']; // Ensure role is captured correctly from the form
 
         try {
-            // Prepare SQL query to update the user/admin
-            $sql = "UPDATE users SET username = :username, email = :email, password = :password, role = :role, last_purchase_id = :last_purchase_id WHERE id = :id";
+            $sql = "UPDATE users SET username = :username, email = :email, password = :password, role = :role WHERE id = :id";
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':username', $username);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':password', $password);
-            $stmt->bindParam(':role', $role);
-            $stmt->bindParam(':last_purchase_id', $last_purchase_id);
+            $stmt->bindParam(':role', $role); // Ensure the role is updated
             $stmt->bindParam(':id', $id);
 
-            // Execute the update query
             if ($stmt->execute()) {
-                header("Location: index.php?message=User/Admin updated successfully");
+                header("Location: user_list.php");
                 exit();
             } else {
                 echo "Error: Unable to update user/admin.";
@@ -51,7 +44,6 @@ if (isset($_GET['id'])) {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -98,10 +90,6 @@ if (isset($_GET['id'])) {
                             <option value="user" <?php echo $user['role'] == 'user' ? 'selected' : ''; ?>>User</option>
                             <option value="admin" <?php echo $user['role'] == 'admin' ? 'selected' : ''; ?>>Admin</option>
                         </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="last_purchase_id" class="block text-sm font-medium">Last Purchase ID (Optional)</label>
-                        <input type="number" name="last_purchase_id" id="last_purchase_id" class="mt-1 block w-full border border-gray-300 p-2" value="<?php echo $user['last_purchase_id']; ?>" />
                     </div>
                     <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Update</button>
                 </form>

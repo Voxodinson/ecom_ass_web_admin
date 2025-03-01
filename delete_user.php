@@ -14,7 +14,7 @@ if (isset($_GET['id'])) {
 
         // Execute the query
         if ($stmt->execute()) {
-            header("Location: index.php?message=User/Admin deleted successfully");
+            header("Location: user_list.php?message=User/Admin deleted successfully");
             exit();
         } else {
             echo "Error: Unable to delete user/admin.";
