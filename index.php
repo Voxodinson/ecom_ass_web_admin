@@ -49,7 +49,6 @@
         $total_purchases = $stmt_purchases->fetchAll(PDO::FETCH_ASSOC);
 
     } catch (PDOException $e) {
-        // Handle any errors
         echo "Error: " . $e->getMessage();
     }
 ?>
@@ -67,16 +66,16 @@
         </div>
         <div class="w-[calc(100%-300px)] h-full overflow-y-auto">
             <div class="h-[60px] px-4 w-full border-b-[1px] border-gray-200 flex items-center justify-between">
-                <h3>Product Management</h3>
+                <h3>Dashboard</h3>
                 <?php include('user.php')?>
             </div>
-            <div class="h-[calc(100vh-60px)] w-full p-6">
+            <div class="h-[calc(100vh-60px)] w-full p-3">
                 <div class="bg-white p-6 rounded-lg shadow-md mb-6 bg-gradient-to-r from-sky-400 to-[#3674B5]">
                     <h2 class="text-2xl font-bold uppercase mb-4 text-white">Total Income</h2>
                     <p class="font-bold text-white text-[3rem]">$<?php echo number_format($total_income, 2); ?></p>
                 </div>
 
-                <div class="bg-white p-3 rounded-lg shadow-md mb-6">
+                <div class="bg-white p-3 rounded-lg mb-6 border-[1px] border-gray-200">
                     <h2 class="text-lg font-semibold mb-4">Top 5 Most Sold Products</h2>
                     <?php if ($total_purchases): ?>
                         <div class="overflow-x-auto">
@@ -104,7 +103,7 @@
                     <?php endif; ?>
                 </div>
 
-                <div class="bg-white p-3 rounded-lg shadow-md mb-6">
+                <div class="bg-white p-3 rounded-lg mb-6 border-[1px] border-gray-200">
                     <h2 class="text-lg font-semibold mb-4">Top 5 Most Sold Products</h2>
                     <?php if ($top_products): ?>
                         <div class="overflow-x-auto">

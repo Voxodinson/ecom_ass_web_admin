@@ -1,15 +1,13 @@
 <?php
-// Include authentication check and config for DB connection
 include('auth.php');
 include_once('config.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = $_POST['role'];
 
-    // Modify SQL query to remove last_purchase_id
     $sql = "INSERT INTO users (username, email, password, role) 
             VALUES (:username, :email, :password, :role)";
     
@@ -28,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 
-// Fetch users and admins from the database
 $sql_users = "SELECT * FROM users WHERE role = 'user'";
 $stmt_users = $con->prepare($sql_users);
 $stmt_users->execute();
@@ -52,26 +49,20 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script>
-        // Toggle form visibility and hide/show tables
         function toggleForm(formId, tableIds, buttonId) {
             const form = document.getElementById(formId);
             const tables = tableIds.map(id => document.getElementById(id));
             const button = document.getElementById(buttonId);
 
-            // Check if form is visible or hidden
             if (form.classList.contains('hidden')) {
-                // If form is hidden, show it and hide the tables
                 form.classList.remove('hidden');
                 tables.forEach(table => table.classList.add('hidden'));
 
-                // Change button text
                 button.textContent = 'Show Tables';
             } else {
-                // If form is visible, hide it and show the tables again
                 form.classList.add('hidden');
                 tables.forEach(table => table.classList.remove('hidden'));
 
-                // Change button text
                 button.textContent = 'Create New User/Admin';
             }
         }
@@ -79,7 +70,7 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
     <div class="flex w-full relative h-[100vh]">
-        <div class="w-[300px] h-full bg-white shadow-md flex-shrink-0">
+        <div class="w-[300px] h-full bg-white flex-shrink-0">
             <?php include('includes/sidebar.php'); ?>
         </div>
         <div class="w-[calc(100%-300px)] h-full overflow-y-auto">
@@ -93,7 +84,7 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
                     <?php include('user.php') ?>
                 </div>
             </div>
-            <div class="h-[calc(100vh-60px)] w-full p-4">
+            <div class="h-[calc(100vh-60px)] w-full p-3">
 
                 <div id="create-form" class="space-y-4 hidden">
                     <h3 class="mb-4 text-lg font-semibold">Create New User or Admin</h3>
@@ -123,7 +114,7 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
                         <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Create</button>
                     </form>
                 </div>
-                <div id="users-table" class="p-3 rounded-md bg-white shadow-md border-[1px] border-gray-200">
+                <div id="users-table" class="p-3 rounded-md bg-white border-[1px] border-gray-200">
                     <h3 class="mb-4 text-lg font-semibold">Users List</h3>
                     <div class="overflow-x-auto mb-8">
                         <table class="min-w-full table-auto rounded-md overflow-hidden">
@@ -155,7 +146,7 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
                 </div>
 
                 <!-- Display Admins Table -->
-                <div id="admins-table" class="p-3 mt-3 rounded-md bg-white shadow-md border-[1px] border-gray-200">
+                <div id="admins-table" class="p-3 mt-3 rounded-md bg-white border-[1px] border-gray-200">
                     <h3 class=" mb-4 text-lg font-semibold">Admins List</h3>
                     <div class="overflow-x-auto ">
                         <table class="min-w-full table-auto rounded-md overflow-hidden">
@@ -193,6 +184,5 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
 </html>
 
 <?php
-// Close the database connection
 $conn = null;
 ?>
