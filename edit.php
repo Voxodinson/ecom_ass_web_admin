@@ -151,18 +151,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="container mx-auto bg-white rounded-lg shadow-md mt-3">
+        <div class="w-full flex items-center ">
+            <a href="javascript:history.back()" class="py-2 px-4 w-[100px] bg-blue-400 rounded-md">Back</a>
+        </div>
         <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">Edit Product</h2>
 
         <form method="POST" enctype="multipart/form-data" class="bg-white p-3">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="form-group">
                     <label for="name" class="text-lg font-medium text-gray-700">Product Name</label>
-                    <input type="text" name="name" id="name" value="<?php echo $product['name']; ?>" class="w-full p-4 mt-2 rounded-lg border border-gray-300" required>
+                    <input type="text" name="name" id="name" value="<?php echo $product['name']; ?>" class="w-full p-4 mt-2 border border-gray-300" required>
                 </div>
 
                 <div class="form-group">
                     <label for="product_type" class="text-lg font-medium text-gray-700">Product Type</label>
-                    <input type="text" name="product_type" id="product_type" value="<?php echo $product['product_type']; ?>" class="w-full p-4 mt-2 rounded-lg border border-gray-300">
+                    <input type="text" name="product_type" id="product_type" value="<?php echo $product['product_type']; ?>" class="w-full p-4 mt-2 border border-gray-300">
                 </div>
 
                 <div class="form-group">
