@@ -52,6 +52,7 @@ if (isset($_GET['id'])) {
     <title>Edit User/Admin</title>
     <link href="src/output.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/x-icon" href="assets/bot.webp">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>

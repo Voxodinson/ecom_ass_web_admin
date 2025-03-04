@@ -146,6 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Product</title>
+    <link rel="icon" type="image/x-icon" href="assets/bot.webp">        
     <link href="src/output.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 font-sans">
