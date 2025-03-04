@@ -2,21 +2,38 @@
 include('auth.php');
 include_once('config.php');
 
+// Check if form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = $_POST['role'];
+    
+    // If profile image is uploaded
+    $image = null;
+    if (!empty($_FILES['profile_image']['name'])) {
+        // Handle file upload
+        $target_dir = "uploads/user/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        $image = $target_dir . basename($_FILES["profile_image"]["name"]);
+        move_uploaded_file($_FILES["profile_image"]["tmp_name"], $image);
+    } else {
+        // Default image if no image uploaded
+        $image = "images/user/default.png"; 
+    }
 
-    $sql = "INSERT INTO users (username, email, password, role) 
-            VALUES (:username, :email, :password, :role)";
+    // SQL to insert the new user
+    $sql = "INSERT INTO users (username, email, password, role, profile_image) 
+            VALUES (:username, :email, :password, :role, :profile_image)";
     
     $stmt = $con->prepare($sql);
     $stmt->bindParam(':username', $username);
     $stmt->bindParam(':email', $email);
     $stmt->bindParam(':password', $password);
     $stmt->bindParam(':role', $role);
-
+    $stmt->bindParam(':profile_image', $image);
     try {
         $stmt->execute();
         $message = "New $role created successfully!";
@@ -25,19 +42,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
-$sql_users = "SELECT * FROM users WHERE role = 'user'";
+// Retrieve users and admins from the database
+$sql_users = "SELECT id, username, email, role, profile_image FROM users WHERE role = 'user'";
 $stmt_users = $con->prepare($sql_users);
 $stmt_users->execute();
 $users = $stmt_users->fetchAll(PDO::FETCH_ASSOC);
 
-$sql_admins = "SELECT * FROM users WHERE role = 'admin'";
+$sql_admins = "SELECT id, username, email, role, profile_image FROM users WHERE role = 'admin'";
 $stmt_admins = $con->prepare($sql_admins);
 $stmt_admins->execute();
 $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -87,12 +102,13 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <div class="h-[calc(100vh-60px)] w-full p-3">
 
+                <!-- Create New User/Admin Form -->
                 <div id="create-form" class="space-y-4 hidden">
                     <h3 class="mb-4 text-lg font-semibold">Create New User or Admin</h3>
                     <?php if (isset($message)) { ?>
                         <p class="text-green-500"><?php echo $message; ?></p>
                     <?php } ?>
-                    <form method="POST">
+                    <form method="POST" enctype="multipart/form-data">
                         <div class="mb-4">
                             <label for="username" class="block text-sm font-medium">Username</label>
                             <input type="text" name="username" id="username" class="mt-1 block w-full border border-gray-300 p-2" required />
@@ -112,16 +128,22 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
                                 <option value="admin">Admin</option>
                             </select>
                         </div>
+                        <div class="mb-4">
+                            <label for="profile_image" class="block text-sm font-medium">Profile Image</label>
+                            <input type="file" name="profile_image" id="profile_image" class="mt-1 block w-full border border-gray-300 p-2" />
+                        </div>
                         <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Create</button>
                     </form>
                 </div>
+
+                <!-- Users Table -->
                 <div id="users-table" class="p-3 rounded-md bg-white border-[1px] border-gray-200">
                     <h3 class="mb-4 text-lg font-semibold">Users List</h3>
                     <div class="overflow-x-auto mb-8">
                         <table class="min-w-full table-auto rounded-md overflow-hidden">
                             <thead>
                                 <tr class="bg-[#3674B5] text-white">
-                                    <th class="px-4 py-2 text-left">ID</th>
+                                    <th class="px-4 py-2 text-left">Profile</th>
                                     <th class="px-4 py-2 text-left">Username</th>
                                     <th class="px-4 py-2 text-left">Email</th>
                                     <th class="px-4 py-2 text-left">Role</th>
@@ -131,7 +153,9 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
                             <tbody>
                                 <?php foreach ($users as $row) { ?>
                                     <tr class="hover:bg-gray-200">
-                                        <td class="px-4 py-2"><?php echo $row['id']; ?></td>
+                                        <td class="px-4 py-2">
+                                            <img src="http://localhost/school_ass/ecom_web/<?php echo htmlspecialchars($row['profile_image']); ?>" class="w-[80px] h-[80px] object-center rounded-lg">
+                                        </td>
                                         <td class="px-4 py-2"><?php echo $row['username']; ?></td>
                                         <td class="px-4 py-2"><?php echo $row['email']; ?></td>
                                         <td class="px-4 py-2"><?php echo $row['role']; ?></td>
@@ -146,14 +170,14 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
 
-                <!-- Display Admins Table -->
+                <!-- Admins Table -->
                 <div id="admins-table" class="p-3 mt-3 rounded-md bg-white border-[1px] border-gray-200">
                     <h3 class=" mb-4 text-lg font-semibold">Admins List</h3>
                     <div class="overflow-x-auto ">
                         <table class="min-w-full table-auto rounded-md overflow-hidden">
                             <thead>
                                 <tr class="bg-[#3674B5] text-white">
-                                    <th class="px-4 py-2 text-left">ID</th>
+                                    <th class="px-4 py-2 text-left">Profile</th>
                                     <th class="px-4 py-2 text-left">Username</th>
                                     <th class="px-4 py-2 text-left">Email</th>
                                     <th class="px-4 py-2 text-left">Role</th>
@@ -163,7 +187,9 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
                             <tbody>
                                 <?php foreach ($admins as $row) { ?>
                                     <tr class="hover:bg-gray-200">
-                                        <td class="px-4 py-2"><?php echo $row['id']; ?></td>
+                                        <td class="px-4 py-2">
+                                            <img src="<?php echo htmlspecialchars($row['profile_image']); ?>" class="w-[80px] h-[80px] object-center rounded-lg">
+                                        </td>
                                         <td class="px-4 py-2"><?php echo $row['username']; ?></td>
                                         <td class="px-4 py-2"><?php echo $row['email']; ?></td>
                                         <td class="px-4 py-2"><?php echo $row['role']; ?></td>
@@ -183,7 +209,3 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </body>
 </html>
-
-<?php
-$conn = null;
-?>
