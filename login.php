@@ -59,26 +59,24 @@ $con->close();
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="bg-white shadow-lg rounded-lg p-8 w-96">
+        <h3 class="text-center text-2xl font-bold mb-4">Login</h3>
 
-<div class="bg-white shadow-lg rounded-lg p-8 w-96">
-    <h3 class="text-center text-2xl font-bold mb-4">Login</h3>
+        <?php if (isset($error)): ?>
+            <div class="bg-red-500 text-white p-2 rounded text-center mb-4"><?php echo $error; ?></div>
+        <?php endif; ?>
 
-    <?php if (isset($error)): ?>
-        <div class="bg-red-500 text-white p-2 rounded text-center mb-4"><?php echo $error; ?></div>
-    <?php endif; ?>
-
-    <form action="" method="POST">
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium">Email</label>
-            <input type="email" name="email" class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-200" required>
-        </div>
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium">Password</label>
-            <input type="password" name="password" class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-200" required>
-        </div>
-        <button type="submit" name="login" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">Login</button>
-    </form>
-</div>
-
+        <form action="" method="POST">
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium">Email</label>
+                <input type="email" name="email" class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-200" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium">Password</label>
+                <input type="password" name="password" class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-200" required>
+            </div>
+            <button type="submit" name="login" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">Login</button>
+        </form>
+    </div>
 </body>
 </html>

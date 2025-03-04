@@ -57,7 +57,7 @@ try {
         </div>
 
         <div id="products-table" class="p-3 w-full ">
-            <div class="bg-white p-3 rounded-lg shadow-md  border-[1px] border-gray-200">
+            <div class="bg-white p-3 rounded-lg  border-[1px] border-gray-200">
                 <h3 class="mb-4 text-lg font-semibold">Users List</h3>
                 <table class="w-full bg-white  rounded-lg overflow-hidden">
                     <thead class="bg-[#3674B5] text-white">
