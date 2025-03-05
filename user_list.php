@@ -2,17 +2,14 @@
 include('auth.php');
 include_once('config.php');
 
-// Check if form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = $_POST['role'];
     
-    // If profile image is uploaded
     $image = null;
     if (!empty($_FILES['profile_image']['name'])) {
-        // Handle file upload
         $target_dir = "uploads/user/";
         if (!file_exists($target_dir)) {
             mkdir($target_dir, 0777, true);
@@ -20,11 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $image = $target_dir . basename($_FILES["profile_image"]["name"]);
         move_uploaded_file($_FILES["profile_image"]["tmp_name"], $image);
     } else {
-        // Default image if no image uploaded
         $image = "images/user/default.png"; 
     }
 
-    // SQL to insert the new user
     $sql = "INSERT INTO users (username, email, password, role, profile_image) 
             VALUES (:username, :email, :password, :role, :profile_image)";
     
@@ -42,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Retrieve users and admins from the database
 $sql_users = "SELECT id, username, email, role, profile_image FROM users WHERE role = 'user'";
 $stmt_users = $con->prepare($sql_users);
 $stmt_users->execute();
@@ -102,7 +96,6 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <div class="h-[calc(100vh-60px)] w-full p-3">
 
-                <!-- Create New User/Admin Form -->
                 <div id="create-form" class="space-y-4 hidden">
                     <h3 class="mb-4 text-lg font-semibold">Create New User or Admin</h3>
                     <?php if (isset($message)) { ?>
@@ -136,7 +129,6 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
                     </form>
                 </div>
 
-                <!-- Users Table -->
                 <div id="users-table" class="p-3 rounded-md bg-white border-[1px] border-gray-200">
                     <h3 class="mb-4 text-lg font-semibold">Users List</h3>
                     <div class="overflow-x-auto mb-8">
@@ -154,7 +146,8 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
                                 <?php foreach ($users as $row) { ?>
                                     <tr class="hover:bg-gray-200">
                                         <td class="px-4 py-2">
-                                            <img src="http://localhost/school_ass/ecom_web/<?php echo htmlspecialchars($row['profile_image']); ?>" class="w-[80px] h-[80px] object-center rounded-lg">
+                                            <img src="<?= !empty($row['profile_image']) ? 'http://localhost/school_ass/ecom_web/' . htmlspecialchars($row['profile_image']) : 'assets/user_image.jpg' ?>"
+                                                class="w-[80px] h-[80px] object-center rounded-lg">
                                         </td>
                                         <td class="px-4 py-2"><?php echo $row['username']; ?></td>
                                         <td class="px-4 py-2"><?php echo $row['email']; ?></td>
@@ -170,7 +163,6 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
 
-                <!-- Admins Table -->
                 <div id="admins-table" class="p-3 mt-3 rounded-md bg-white border-[1px] border-gray-200">
                     <h3 class=" mb-4 text-lg font-semibold">Admins List</h3>
                     <div class="overflow-x-auto ">
@@ -188,7 +180,8 @@ $admins = $stmt_admins->fetchAll(PDO::FETCH_ASSOC);
                                 <?php foreach ($admins as $row) { ?>
                                     <tr class="hover:bg-gray-200">
                                         <td class="px-4 py-2">
-                                            <img src="<?php echo htmlspecialchars($row['profile_image']); ?>" class="w-[80px] h-[80px] object-center rounded-lg">
+                                            <img src="<?= !empty($row['profile_image']) ? htmlspecialchars($row['profile_image']) : 'assets/user_image.jpg' ?>"
+                                                class="w-[80px] h-[80px] object-center rounded-lg">
                                         </td>
                                         <td class="px-4 py-2"><?php echo $row['username']; ?></td>
                                         <td class="px-4 py-2"><?php echo $row['email']; ?></td>

@@ -71,7 +71,6 @@ if (isset($_GET['id'])) {
                     <p class="text-green-500"><?php echo $message; ?></p>
                 <?php } ?>
 
-                <!-- Edit User/Admin Form -->
                 <form method="POST" class="space-y-4">
                     <div class="mb-4">
                         <label for="username" class="block text-sm font-medium">Username</label>

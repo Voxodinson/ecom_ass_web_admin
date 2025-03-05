@@ -3,7 +3,6 @@ include('auth.php');
 include_once('config.php');
 
 try {
-    // Use PDO to fetch products
     $sql = "SELECT * FROM products_tb";
     $stmt = $con->prepare($sql);
     $stmt->execute();
@@ -50,13 +49,34 @@ try {
         <div class="h-[60px] w-full border-b border-gray-200 flex items-center justify-between px-4">
             <h3>Product List</h3>
             <div class="flex gap-3 items-center ">
-                <button onclick="toggleCreateForm()" class="ml-4 text-[.8rem] bg-[#3674B5] text-white px-4 py-2 rounded-full">
+                <a href='create_product.php' class="ml-4 text-[.8rem] bg-[#3674B5] text-white px-4 py-2 rounded-full">
                     Create Product
-                </button>
+                </a>
                 <?php include('user.php')?>
             </div>
         </div>
+        <?php if (isset($_GET['status'])): ?>
+            <div class="absolute top-0 right-0 w-full p-4 bg-green-500 text-white text-center">
+                <?php 
+                    if ($_GET['status'] == 'success') {
+                        echo 'Product deleted successfully!';
+                    } elseif ($_GET['status'] == 'created') {
+                        echo 'Product created successfully!';
+                    } else {
+                        echo 'Failed to delete the product!';
+                    }
+                ?>
+            </div>
 
+            <script>
+                setTimeout(function() {
+                    const url = new URL(window.location);
+                    url.searchParams.delete('status');
+                    window.history.replaceState({}, document.title, url.toString()); 
+                    window.location.reload(); 
+                }, 1500);
+            </script>
+        <?php endif; ?>
         <div id="products-table" class="p-3 w-full ">
             <div class="bg-white p-3 rounded-lg  border-[1px] border-gray-200">
                 <h3 class="mb-4 text-lg font-semibold">Users List</h3>
@@ -83,7 +103,7 @@ try {
                                         if (!empty($images) && is_array($images)) {
                                             echo '<img src="uploads/images/' . htmlspecialchars($images[0]) . '" class="w-[80px] h-[80px] object-center rounded-lg">';
                                         } else {
-                                            echo 'No Image';
+                                            echo '<img src="assets/no_image.jpg" class="w-[80px] h-[80px] object-center rounded-lg">';
                                         }
                                         ?>
                                     </td>
@@ -128,12 +148,6 @@ try {
 <?php
     $con = null;
 ?>
-
-<?php if (isset($_GET['status'])): ?>
-    <div class="fixed top-0 left-0 w-full p-4 bg-green-500 text-white text-center">
-        <?php echo $_GET['status'] == 'success' ? 'Product deleted successfully!' : 'Failed to delete the product!'; ?>
-    </div>
-<?php endif; ?>
 
 </body>
 </html>

@@ -13,7 +13,6 @@ $dbname = "ecom_web_assignment";
 
 $con = new mysqli($host, $user, $pass, $dbname);
 
-// Check connection
 if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
 }
