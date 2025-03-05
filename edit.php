@@ -149,14 +149,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="icon" type="image/x-icon" href="assets/bot.webp">        
     <link href="src/output.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 font-sans">
-    <div class="container mx-auto bg-white rounded-lg shadow-md mt-3">
-        <div class="w-full flex items-center ">
-            <a href="javascript:history.back()" class="py-2 px-4 w-[100px] bg-blue-400 rounded-md">Back</a>
+<body class="bg-gray-100 font-sanss">
+    <div class="container mx-auto bg-white relative rounded-lg shadow-md mt-3">
+        <div class="w-fit flex items-center absolute top-3 right-3">
+            <a href="javascript:history.back()" class="py-2 px-4 w-[100px]">Back</a>
         </div>
         <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">Edit Product</h2>
 
-        <form method="POST" enctype="multipart/form-data" class="bg-white p-3">
+        <form method="POST" enctype="multipart/form-data" class="bg-white p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="form-group">
                     <label for="name" class="text-lg font-medium text-gray-700">Product Name</label>
