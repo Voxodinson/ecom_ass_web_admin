@@ -1,12 +1,10 @@
 <?php
-include('config.php'); // Include database connection
+include('config.php');
 
-// Check if the product id is provided for editing
 if (isset($_GET['id'])) {
     $product_id = $_GET['id'];
 
     try {
-        // Fetch the existing product details from the database
         $stmt = $con->prepare("SELECT * FROM products_tb WHERE id = :id");
         $stmt->bindParam(':id', $product_id);
         $stmt->execute();
@@ -20,30 +18,26 @@ if (isset($_GET['id'])) {
     }
 }
 
-// Handle image deletion (if applicable)
 if (isset($_GET['delete_image']) && isset($_GET['image_name'])) {
     $image_to_delete = $_GET['image_name'];
     $image_path = 'uploads/images/' . $image_to_delete;
 
     if (file_exists($image_path)) {
-        unlink($image_path); // Delete the image from the server
-        // You also need to remove it from the database (assuming JSON storage for images)
+        unlink($image_path);
         $updated_images = array_filter(json_decode($product['images'], true), fn($image) => $image !== $image_to_delete);
         $updated_images_json = json_encode(array_values($updated_images));
 
-        // Update the database to reflect the deletion
         $stmt = $con->prepare("UPDATE products_tb SET images = :images WHERE id = :id");
         $stmt->bindParam(':images', $updated_images_json);
         $stmt->bindParam(':id', $product_id);
         $stmt->execute();
 
-        header("Location: edit_product.php?id=$product_id"); // Redirect after deletion
+        header("Location: edit_product.php?id=$product_id");
         exit();
     }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Collect form data (same as your original code)
     $name = $_POST['name'];
     $product_type = $_POST['product_type'] ?? null;
     $price = $_POST['price'];
@@ -179,7 +173,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <!-- Size Selection -->
             <div class="form-group mt-6">
                 <label for="size" class="text-lg font-medium text-gray-700">Sizes</label>
                 <div id="size-container">
@@ -193,7 +186,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="button" id="add-size" class="text-sm text-indigo-600 hover:text-indigo-800 mt-2">+ Add more sizes</button>
             </div>
 
-            <!-- Image Upload Section -->
             <div class="form-group w-full mt-6">
                 <label for="images" class="text-lg font-medium text-gray-700">Product Images</label>
                 <div id="image-preview-container" class="flex gap-3">
@@ -233,7 +225,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </select>
             </div>
 
-            <!-- Submit Button -->
             <div class="mt-6">
                 <button type="submit" class="w-full bg-black text-white p-4 rounded-lg">Update Product</button>
             </div>
@@ -242,7 +233,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Add new size input dynamically
             document.getElementById('add-size').addEventListener('click', function() {
                 const sizeContainer = document.getElementById('size-container');
                 const newSizeInput = document.createElement('input');
@@ -253,7 +243,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 sizeContainer.appendChild(newSizeInput);
             });
 
-            // Preview selected images
             document.getElementById('image-input').addEventListener('change', function(e) {
                 const previewContainer = document.getElementById('image-preview-container');
                 previewContainer.innerHTML = ''; 

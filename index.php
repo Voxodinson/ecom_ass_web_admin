@@ -76,12 +76,13 @@
                 </div>
 
                 <div class="bg-white p-3 rounded-lg mb-6 border-[1px] border-gray-200">
-                    <h2 class="text-lg font-semibold mb-4">Top 5 Most Sold Products</h2>
+                    <h2 class="text-lg font-semibold mb-4">Top 5 Most Spend Users</h2>
                     <?php if ($total_purchases): ?>
                         <div class="overflow-x-auto">
                             <table class="min-w-full table-auto rounded-md overflow-hidden">
                                 <thead class="bg-[#3674B5]">
                                     <tr class="*:uppercase">
+                                        <th class="px-6 py-3 text-left text-sm font-medium text-white">Profile</th>
                                         <th class="px-6 py-3 text-left text-sm font-medium text-white">Username</th>
                                         <th class="px-6 py-3 text-left text-sm font-medium text-white">Email</th>
                                         <th class="px-6 py-3 text-left text-sm font-medium text-white">Total Purchase Amount</th>
@@ -90,6 +91,10 @@
                                 <tbody class="divide-y divide-gray-200">
                                     <?php foreach ($total_purchases as $user): ?>
                                         <tr class=" hover:bg-gray-100">
+                                            <td class="px-6 py-4 text-md text-gray-700">
+                                                <img src="<?= !empty($user['profile_image']) ? htmlspecialchars($user['profile_image']) : 'assets/user_image.jpg' ?>"
+                                                    class="w-[80px] h-[80px] object-center rounded-lg">
+                                            </td>
                                             <td class="px-6 py-4 text-md text-gray-700"><?php echo htmlspecialchars($user['username']); ?></td>
                                             <td class="px-6 py-4 text-md text-gray-700"><?php echo htmlspecialchars($user['email']); ?></td>
                                             <td class="px-6 py-4 text-md text-gray-700">$<?php echo number_format($user['total_purchase_amount'], 2); ?></td>
@@ -120,7 +125,7 @@
                                         <tr class="hover:bg-gray-100">
                                             <td class="pl-6 py-4 text-sm text-gray-700">
                                                 <img 
-                                                    src="uploads/images/<?php echo htmlspecialchars($product['image']); ?>" 
+                                                    src="<?= !empty($product['image']) ? 'uploads/images/' . htmlspecialchars($product['image']) : 'assets/no_image.jpg' ?>"
                                                     alt="<?php echo htmlspecialchars($product['product_name']); ?>" 
                                                     class="w-24 h-24 object-cover rounded-md">
                                             </td>

@@ -5,25 +5,25 @@
             alt=""
             class="w-[180px] h-[180px]">
     </div>
-    <ul class="*:w-full p-3 *:px-4 *:py-2 flex flex-col gap-2 *:rounded-md *:transition-all *:ease-in-out *:duration-300">
+    <ul class="*:w-full p-3 *:px-4 flex flex-col gap-2 *:rounded-md *:transition-all *:ease-in-out *:duration-300">
         <?php 
             $current_page = basename($_SERVER['PHP_SELF']);
         ?>
         <li class="flex items-center gap-2 hover:bg-[#3674B5] hover:text-white hover:bg-opacity-30 <?= $current_page == 'index.php' ? 'bg-[#3674B5] text-white' : '' ?>">
             <i class="fas fa-home text-[1.2rem] w-[30px]"></i>  
-            <a href="index.php">Dashboard</a>
+            <a href="index.php" class="w-full py-2">Dashboard</a>
         </li>
         <li class="flex items-center gap-2 hover:bg-[#3674B5] hover:text-white hover:bg-opacity-30 <?= $current_page == 'products_list.php' ? 'bg-[#3674B5] text-white' : '' ?>">
             <i class="fas fa-box text-[1.2rem] w-[30px]"></i>  
-            <a href="products_list.php">Product Management</a>
+            <a href="products_list.php" class="w-full py-2">Product Management</a>
         </li>
         <li class="flex items-center gap-2 hover:bg-[#3674B5] hover:text-white hover:bg-opacity-30 <?= $current_page == 'orders.php' ? 'bg-[#3674B5] text-white' : '' ?>">
-            <i class="fas fa-user text-[1.2rem] w-[30px]"></i>  
-            <a href="orders.php">Orders Activity</a>
+            <i class="fa-solid fa-box-open text-[1.2rem] w-[30px]"></i>  
+            <a href="orders.php" class="w-full py-2">Sale</a>
         </li>
         <li class="flex items-center gap-2 hover:bg-[#3674B5] hover:text-white hover:bg-opacity-30 <?= $current_page == 'user_list.php' ? 'bg-[#3674B5] text-white' : '' ?>">
             <i class="fas fa-user text-[1.2rem] w-[30px]"></i>  
-            <a href="user_list.php">User Management</a>
+            <a href="user_list.php" class="w-full py-2">User Management</a>
         </li>
     </ul>
 

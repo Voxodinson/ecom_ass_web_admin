@@ -67,10 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':product_for', $product_for);
         
         if ($stmt->execute()) {
-            header("Location: products_list.php?status=success");
             echo "<div class='bg-green-500 text-white p-3 mb-4 rounded-lg'>Product created successfully!</div>";
+            header("Location: products_list.php?status=created");
         } else {
-            header("Location: create_product.php?status=error");
             echo "<div class='bg-red-500 text-white p-3 mb-4 rounded-lg'>Error creating product.</div>";
         }
     } catch (PDOException $e) {
@@ -79,136 +78,182 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<div class="w-full flex items-center justify-center">
-    <form method="POST" enctype="multipart/form-data" class="w-full">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Create Product</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label for="name" class="block text-lg font-medium text-gray-700">Product Name</label>
-                <input type="text" name="name" id="name" placeholder="Enter product name" required class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/x-icon" href="assets/bot.webp">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-            <div>
-                <label for="product_type" class="block text-lg font-medium text-gray-700">Product Type</label>
-                <input type="text" name="product_type" id="product_type" placeholder="Enter product type" class=" mt-1 block w-full p-2 border border-gray-300  shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-        
-            <div>
-                <label for="price" class="block text-lg font-medium text-gray-700">Price</label>
-                <input type="number" name="price" id="price" placeholder="Enter price" step="0.01" required class=" mt-1 block w-full p-2 border border-gray-300  shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
+    <script>
+        function toggleCreateForm() {
+            const table = document.getElementById('products-table');
+            const createForm = document.getElementById('create-form');
+            table.classList.toggle('hidden');
+            createForm.classList.toggle('hidden');
+        }
 
-            <div>
-                <label for="stock_qty" class="block text-lg  font-medium text-gray-700">Stock Quantity</label>
-                <input type="number" name="stock_qty" id="stock_qty" placeholder="Enter stock quantity" required class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-        </div>
-
-        <div class="mt-4">
-            <label for="size" class="block text-lg font-medium text-gray-700">Sizes</label>
-            <div id="size-container">
-                <input type="text" name="size[]" placeholder="Size 1" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mb-2">
-            </div>
-            <button type="button" id="add-size" class="text-sm text-indigo-600 hover:text-indigo-800">+ Add more sizes</button>
-        </div>
-
-        <div class="mt-4">
-            <label class="block text-lg font-medium text-gray-700">Product Images</label>
-            <input type="file" name="images[]" multiple id="image-input" class=" mt-1 block w-full p-2 border border-gray-300  shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-        </div>
-
-        <div class="mt-4">
-            <label for="rating" class="block text-lg font-medium text-gray-700">Rating (0-5)</label>
-            <input type="number" name="rating" id="rating" placeholder="Enter rating" step="0.1" min="0" max="5" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-        </div>
-
-        <div class="mt-4">
-            <label for="status" class="block text-lg font-medium text-gray-700">Status</label>
-            <select name="status" id="status" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                <option value="new arrive">New Arrive</option>
-                <option value="best sale">Best Sale</option>
-            </select>
-        </div>
-
-        <div class="mt-4">
-            <label for="details" class="block text-lg font-medium text-gray-700">Product Details</label>
-            <textarea name="details" id="details" placeholder="Enter product details" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-            <div>
-                <label for="brand" class="block text-lg font-medium text-gray-700">Brand</label>
-                <input type="text" name="brand" id="brand" placeholder="Enter brand" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-
-            <div>
-                <label for="color" class="block text-lg font-medium text-gray-700">Color</label>
-                <input type="text" name="color" id="color" placeholder="Enter color" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-            <div>
-                <label for="material" class="block text-lg font-medium text-gray-700">Material</label>
-                <input type="text" name="material" id="material" placeholder="Enter material" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-
-            <div>
-                <label for="style" class="block text-lg font-medium text-gray-700">Style</label>
-                <input type="text" name="style" id="style" placeholder="Enter style" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-        </div>
-
-        <div class="mt-4">
-            <label for="product_for" class="block text-lg font-medium text-gray-700">Product For</label>
-            <select name="product_for" id="product_for" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                <option value="men">Men</option>
-                <option value="women">Women</option>
-            </select>
-        </div>
-
-        <div class="mt-6">
-            <button type="submit" class="w-full bg-indigo-600 text-white p-2 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-md">
-                Create Product
-            </button>
-        </div>
-    </form>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('add-size').addEventListener('click', function() {
-            let sizeContainer = document.getElementById('size-container');
-            let newSizeInput = document.createElement('input');
-            newSizeInput.type = 'text';
-            newSizeInput.name = 'size[]';
-            newSizeInput.classList.add('border', 'p-2', 'rounded', 'mb-2', 'w-full');
-            newSizeInput.placeholder = 'Additional Size';
-            sizeContainer.appendChild(newSizeInput);
-        });
-
-        document.getElementById('image-input').addEventListener('change', function(event) {
-            let previewContainer = document.getElementById('image-previews');
-            previewContainer.innerHTML = '';
-
-            for (let i = 0; i < event.target.files.length; i++) {
-                let file = event.target.files[i];
-                let reader = new FileReader();
-
-                reader.onload = function(e) {
-                    let img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.classList.add('w-32', 'h-32', 'object-cover', 'mr-2');
-
-                    let preview = document.createElement('div');
-                    preview.classList.add('inline-block', 'mr-4');
-                    preview.appendChild(img);
-                    previewContainer.appendChild(preview);
-                };
-
-                reader.readAsDataURL(file);
+        function confirmDelete(id) {
+            const isConfirmed = confirm('Are you sure you want to delete this product?');
+            if (isConfirmed) {
+                window.location.href = 'delete.php?id=' + id;
             }
+        }
+    </script>
+</head>
+<body>
+    <div class="flex h-screen overflow-auto ">
+        <div class="w-[300px] h-full bg-white shadow-md flex-shrink-0">
+            <?php include('includes/sidebar.php'); ?>
+        </div>
+
+        <div class="flex-1 h-full overflow-auto">
+            <div class="h-[60px] w-full border-b border-gray-200 flex items-center justify-between px-4">
+                <h3>Product List</h3>
+                <div class="flex gap-3 items-center ">
+                    <button onclick="toggleCreateForm()" class="ml-4 text-[.8rem] bg-[#3674B5] text-white px-4 py-2 rounded-full">
+                        Create Product
+                    </button>
+                    <?php include('user.php')?>
+                </div>
+            </div>
+            <div class="w-full flex items-center p-3 justify-center">
+                <form method="POST" enctype="multipart/form-data" class="w-full p-3 bg-white rounded-md border-[1px] border-gray-200 ">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Create Product</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-lg font-medium text-gray-700">Product Name</label>
+                            <input type="text" name="name" id="name" placeholder="Enter product name" required class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+
+                        <div>
+                            <label for="product_type" class="block text-lg font-medium text-gray-700">Product Type</label>
+                            <input type="text" name="product_type" id="product_type" placeholder="Enter product type" class=" mt-1 block w-full p-2 border border-gray-300  shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    
+                        <div>
+                            <label for="price" class="block text-lg font-medium text-gray-700">Price</label>
+                            <input type="number" name="price" id="price" placeholder="Enter price" step="0.01" required class=" mt-1 block w-full p-2 border border-gray-300  shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+
+                        <div>
+                            <label for="stock_qty" class="block text-lg  font-medium text-gray-700">Stock Quantity</label>
+                            <input type="number" name="stock_qty" id="stock_qty" placeholder="Enter stock quantity" required class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label for="size" class="block text-lg font-medium text-gray-700">Sizes</label>
+                        <div id="size-container">
+                            <input type="text" name="size[]" placeholder="Size 1" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mb-2">
+                        </div>
+                        <button type="button" id="add-size" class="text-sm text-indigo-600 hover:text-indigo-800">+ Add more sizes</button>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="block text-lg font-medium text-gray-700">Product Images</label>
+                        <input type="file" name="images[]" multiple id="image-input" class=" mt-1 block w-full p-2 border border-gray-300  shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+
+                    <div class="mt-4">
+                        <label for="rating" class="block text-lg font-medium text-gray-700">Rating (0-5)</label>
+                        <input type="number" name="rating" id="rating" placeholder="Enter rating" step="0.1" min="0" max="5" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+
+                    <div class="mt-4">
+                        <label for="status" class="block text-lg font-medium text-gray-700">Status</label>
+                        <select name="status" id="status" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="new arrive">New Arrive</option>
+                            <option value="best sale">Best Sale</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-4">
+                        <label for="details" class="block text-lg font-medium text-gray-700">Product Details</label>
+                        <textarea name="details" id="details" placeholder="Enter product details" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        <div>
+                            <label for="brand" class="block text-lg font-medium text-gray-700">Brand</label>
+                            <input type="text" name="brand" id="brand" placeholder="Enter brand" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+
+                        <div>
+                            <label for="color" class="block text-lg font-medium text-gray-700">Color</label>
+                            <input type="text" name="color" id="color" placeholder="Enter color" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        <div>
+                            <label for="material" class="block text-lg font-medium text-gray-700">Material</label>
+                            <input type="text" name="material" id="material" placeholder="Enter material" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+
+                        <div>
+                            <label for="style" class="block text-lg font-medium text-gray-700">Style</label>
+                            <input type="text" name="style" id="style" placeholder="Enter style" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label for="product_for" class="block text-lg font-medium text-gray-700">Product For</label>
+                        <select name="product_for" id="product_for" class=" mt-1 block w-full p-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="men">Men</option>
+                            <option value="women">Women</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-6">
+                        <button type="submit" class="w-full bg-indigo-600 text-white p-2 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-md">
+                            Create Product
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('add-size').addEventListener('click', function() {
+                let sizeContainer = document.getElementById('size-container');
+                let newSizeInput = document.createElement('input');
+                newSizeInput.type = 'text';
+                newSizeInput.name = 'size[]';
+                newSizeInput.classList.add('border', 'p-2', 'rounded', 'mb-2', 'w-full');
+                newSizeInput.placeholder = 'Additional Size';
+                sizeContainer.appendChild(newSizeInput);
+            });
+
+            document.getElementById('image-input').addEventListener('change', function(event) {
+                let previewContainer = document.getElementById('image-previews');
+                previewContainer.innerHTML = '';
+
+                for (let i = 0; i < event.target.files.length; i++) {
+                    let file = event.target.files[i];
+                    let reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        let img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('w-32', 'h-32', 'object-cover', 'mr-2');
+
+                        let preview = document.createElement('div');
+                        preview.classList.add('inline-block', 'mr-4');
+                        preview.appendChild(img);
+                        previewContainer.appendChild(preview);
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
         });
-    });
-</script>
+    </script>
+
+
+</body>
+</html>
