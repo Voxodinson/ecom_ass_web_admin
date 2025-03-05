@@ -17,6 +17,10 @@
             <i class="fas fa-box text-[1.2rem] w-[30px]"></i>  
             <a href="products_list.php">Product Management</a>
         </li>
+        <li class="flex items-center gap-2 hover:bg-[#3674B5] hover:text-white hover:bg-opacity-30 <?= $current_page == 'orders.php' ? 'bg-[#3674B5] text-white' : '' ?>">
+            <i class="fas fa-user text-[1.2rem] w-[30px]"></i>  
+            <a href="orders.php">Orders Activity</a>
+        </li>
         <li class="flex items-center gap-2 hover:bg-[#3674B5] hover:text-white hover:bg-opacity-30 <?= $current_page == 'user_list.php' ? 'bg-[#3674B5] text-white' : '' ?>">
             <i class="fas fa-user text-[1.2rem] w-[30px]"></i>  
             <a href="user_list.php">User Management</a>

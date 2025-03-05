@@ -65,10 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':material', $material);
         $stmt->bindParam(':style', $style);
         $stmt->bindParam(':product_for', $product_for);
-
+        
         if ($stmt->execute()) {
+            header("Location: products_list.php?status=success");
             echo "<div class='bg-green-500 text-white p-3 mb-4 rounded-lg'>Product created successfully!</div>";
         } else {
+            header("Location: create_product.php?status=error");
             echo "<div class='bg-red-500 text-white p-3 mb-4 rounded-lg'>Error creating product.</div>";
         }
     } catch (PDOException $e) {
@@ -188,7 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         document.getElementById('image-input').addEventListener('change', function(event) {
             let previewContainer = document.getElementById('image-previews');
-            previewContainer.innerHTML = ''; // Clear previous previews
+            previewContainer.innerHTML = '';
 
             for (let i = 0; i < event.target.files.length; i++) {
                 let file = event.target.files[i];
@@ -196,7 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 reader.onload = function(e) {
                     let img = document.createElement('img');
-                    img.src = e.target.result; // Display image in preview
+                    img.src = e.target.result;
                     img.classList.add('w-32', 'h-32', 'object-cover', 'mr-2');
 
                     let preview = document.createElement('div');
